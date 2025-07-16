@@ -6,10 +6,14 @@ BOOK_ISBN_MAX_LENGTH = 13
 BOOKINSTANCE_IMPRINT_MAX_LENGTH = 200
 AUTHOR_FIRST_NAME_MAX_LENGTH = 100
 AUTHOR_LAST_NAME_MAX_LENGTH = 100
+LOAN_STATUS_MAINTENANCE = 'm'
+LOAN_STATUS_ON_LOAN = 'o'
+LOAN_STATUS_AVAILABLE = 'a'
+LOAN_STATUS_RESERVED = 'r'
 
 LOAN_STATUS = (
-    ('m', 'Maintenance'),
-    ('o', 'On loan'),
-    ('a', 'Available'),
-    ('r', 'Reserved'),
+    (LOAN_STATUS_MAINTENANCE, 'Maintenance'),
+    (LOAN_STATUS_ON_LOAN, 'On loan'),
+    (LOAN_STATUS_AVAILABLE, 'Available'),
+    (LOAN_STATUS_RESERVED, 'Reserved'),
 )
