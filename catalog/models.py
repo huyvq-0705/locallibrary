@@ -14,6 +14,7 @@ from .constants import (
     AUTHOR_FIRST_NAME_MAX_LENGTH,
     AUTHOR_LAST_NAME_MAX_LENGTH,
     LOAN_STATUS,
+    LOAN_STATUS_MAINTENANCE,
 )
 
 
@@ -92,7 +93,7 @@ class BookInstance(models.Model):
         max_length=1,
         choices=LOAN_STATUS,
         blank=True,
-        default='m',
+        default=LOAN_STATUS_MAINTENANCE,
         help_text=_('Book availability'),
     )
 
