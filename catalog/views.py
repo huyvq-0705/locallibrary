@@ -1,6 +1,10 @@
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404
+from django.views import generic
+
 from catalog.models import Book, Author, BookInstance
-from catalog.constants import LOAN_STATUS_AVAILABLE
+from catalog.constants import LOAN_STATUS_AVAILABLE, LOAN_STATUS_ON_LOAN
+from catalog.constants import LOAN_STATUS
 
 
 def index(request):
@@ -18,3 +22,23 @@ def index(request):
     }
 
     return render(request, 'index.html', context)
+
+
+class BookListView(generic.ListView):
+    model = Book
+    context_object_name = 'book_list'
+    template_name = 'catalog/book_list.html'
+    paginate_by = 2
+
+
+class BookDetailView(generic.DetailView):
+    model = Book
+    context_object_name = 'book'
+    template_name = 'catalog/book_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        book = self.get_object()
+        context['genres'] = book.genre.all()
+        context['instances'] = book.bookinstance_set.all()
+        return context
