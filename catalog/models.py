@@ -1,8 +1,10 @@
 import uuid
+from datetime import date
 
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import User
 
 from .constants import (
     GENRE_NAME_MAX_LENGTH,
@@ -13,11 +15,9 @@ from .constants import (
     BOOKINSTANCE_IMPRINT_MAX_LENGTH,
     AUTHOR_FIRST_NAME_MAX_LENGTH,
     AUTHOR_LAST_NAME_MAX_LENGTH,
-    LOAN_STATUS, 
-    LOAN_STATUS_MAINTENANCE,  
-    LOAN_STATUS_AVAILABLE,   
-    LOAN_STATUS_ON_LOAN,     
-    LOAN_STATUS_RESERVED,    
+    LOAN_STATUS,
+    LOAN_STATUS_MAINTENANCE,
+    ISBN_HELP_TEXT,
 )
 
 
@@ -42,11 +42,27 @@ class Language(models.Model):
         return self.name
 
 
+class Author(models.Model):
+    first_name = models.CharField(max_length=AUTHOR_FIRST_NAME_MAX_LENGTH)
+    last_name = models.CharField(max_length=AUTHOR_LAST_NAME_MAX_LENGTH)
+    date_of_birth = models.DateField(null=True, blank=True)
+    date_of_death = models.DateField(_('Died'), null=True, blank=True)
+
+    class Meta:
+        ordering = ['last_name', 'first_name']
+
+    def get_absolute_url(self):
+        return reverse('author-detail', args=[str(self.id)])
+
+    def __str__(self):
+        return f'{self.last_name}, {self.first_name}'
+
+
 class Book(models.Model):
     title = models.CharField(max_length=BOOK_TITLE_MAX_LENGTH)
 
     author = models.ForeignKey(
-        'Author',
+        Author,
         on_delete=models.SET_NULL,
         null=True
     )
@@ -60,17 +76,16 @@ class Book(models.Model):
         _('ISBN'),
         max_length=BOOK_ISBN_MAX_LENGTH,
         unique=True,
-        help_text=_(
-            '13 Character <a href="https://www.isbn-international.org/content/what-isbn">ISBN number</a>')
+        help_text=ISBN_HELP_TEXT
     )
 
     genre = models.ManyToManyField(
-        'Genre',
+        Genre,
         help_text=_('Select a genre for this book')
     )
 
     language = models.ForeignKey(
-        'Language',
+        Language,
         on_delete=models.SET_NULL,
         null=True
     )
@@ -88,9 +103,14 @@ class BookInstance(models.Model):
         default=uuid.uuid4,
         help_text=_('Unique ID for this particular book across whole library')
     )
-    book = models.ForeignKey('Book', on_delete=models.RESTRICT)
+    book = models.ForeignKey(Book, on_delete=models.RESTRICT)
     imprint = models.CharField(max_length=BOOKINSTANCE_IMPRINT_MAX_LENGTH)
     due_back = models.DateField(null=True, blank=True)
+    borrower = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True)
 
     status = models.CharField(
         max_length=1,
@@ -102,31 +122,11 @@ class BookInstance(models.Model):
 
     class Meta:
         ordering = ['due_back']
+        permissions = (("can_mark_returned", "Set book as returned"),)
 
     def __str__(self):
         return f'{self.id} ({self.book.title})'
-    
-    def get_status_css_class(self):
-        if self.status == LOAN_STATUS_AVAILABLE:
-            return "text-success"
-        elif self.status == LOAN_STATUS_MAINTENANCE:
-            return "text-danger"
-        else:
-            return "text-warning" 
-    
 
-
-class Author(models.Model):
-    first_name = models.CharField(max_length=AUTHOR_FIRST_NAME_MAX_LENGTH)
-    last_name = models.CharField(max_length=AUTHOR_LAST_NAME_MAX_LENGTH)
-    date_of_birth = models.DateField(null=True, blank=True)
-    date_of_death = models.DateField(_('Died'), null=True, blank=True)
-
-    class Meta:
-        ordering = ['last_name', 'first_name']
-
-    def get_absolute_url(self):
-        return reverse('author-detail', args=[str(self.id)])
-
-    def __str__(self):
-        return f'{self.last_name}, {self.first_name}'
+    @property
+    def is_overdue(self):
+        return self.due_back and date.today() > self.due_back
