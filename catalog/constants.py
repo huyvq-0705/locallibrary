@@ -1,3 +1,5 @@
+from django.utils.translation import gettext_lazy as _
+
 GENRE_NAME_MAX_LENGTH = 200
 LANGUAGE_NAME_MAX_LENGTH = 200
 BOOK_TITLE_MAX_LENGTH = 200
@@ -11,9 +13,17 @@ LOAN_STATUS_ON_LOAN = 'o'
 LOAN_STATUS_AVAILABLE = 'a'
 LOAN_STATUS_RESERVED = 'r'
 
+
 LOAN_STATUS = (
     (LOAN_STATUS_MAINTENANCE, 'Maintenance'),
     (LOAN_STATUS_ON_LOAN, 'On loan'),
     (LOAN_STATUS_AVAILABLE, 'Available'),
     (LOAN_STATUS_RESERVED, 'Reserved'),
+)
+
+ISBN_HELP_TEXT = _(
+    '13 Character '
+    '<a href="https://www.isbn-international.org/content/what-isbn">'
+    'ISBN number'
+    '</a>'
 )
