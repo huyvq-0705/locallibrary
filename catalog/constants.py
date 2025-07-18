@@ -15,6 +15,7 @@ LOAN_STATUS_RESERVED = 'r'
 PAGINATION_BY = 2
 
 
+
 LOAN_STATUS = (
     (LOAN_STATUS_MAINTENANCE, 'Maintenance'),
     (LOAN_STATUS_ON_LOAN, 'On loan'),
