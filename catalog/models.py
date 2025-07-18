@@ -13,8 +13,11 @@ from .constants import (
     BOOKINSTANCE_IMPRINT_MAX_LENGTH,
     AUTHOR_FIRST_NAME_MAX_LENGTH,
     AUTHOR_LAST_NAME_MAX_LENGTH,
-    LOAN_STATUS,
-    LOAN_STATUS_MAINTENANCE,
+    LOAN_STATUS, 
+    LOAN_STATUS_MAINTENANCE,  
+    LOAN_STATUS_AVAILABLE,   
+    LOAN_STATUS_ON_LOAN,     
+    LOAN_STATUS_RESERVED,    
 )
 
 
@@ -102,6 +105,15 @@ class BookInstance(models.Model):
 
     def __str__(self):
         return f'{self.id} ({self.book.title})'
+    
+    def get_status_css_class(self):
+        if self.status == LOAN_STATUS_AVAILABLE:
+            return "text-success"
+        elif self.status == LOAN_STATUS_MAINTENANCE:
+            return "text-danger"
+        else:
+            return "text-warning" 
+    
 
 
 class Author(models.Model):
