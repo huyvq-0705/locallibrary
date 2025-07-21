@@ -12,9 +12,13 @@ LOAN_STATUS_MAINTENANCE = 'm'
 LOAN_STATUS_ON_LOAN = 'o'
 LOAN_STATUS_AVAILABLE = 'a'
 LOAN_STATUS_RESERVED = 'r'
+DEFAULT_RENEWAL_WEEKS = 3
 PAGINATION_BY = 2
-
-
+PERM_MARK_RETURNED = 'catalog.can_mark_returned'
+PERM_ADD_AUTHOR = 'catalog.add_author'
+PERM_CHANGE_AUTHOR = 'catalog.change_author'
+PERM_DELETE_AUTHOR = 'catalog.delete_author'
+DEFAULT_DATE_OF_DEATH = '2000-01-01'
 
 LOAN_STATUS = (
     (LOAN_STATUS_MAINTENANCE, 'Maintenance'),

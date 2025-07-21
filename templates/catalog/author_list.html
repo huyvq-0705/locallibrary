@@ -1,0 +1,37 @@
+{% extends "base_generic.html" %}
+{% load i18n %}
+
+{% block content %}
+  <h1>{% trans "All Authors" %}</h1>
+
+  {# “Add new author” link for users who can add authors #}
+  {% if perms.catalog.add_author %}
+    <p>
+      <a class="btn btn-primary" href="{% url 'author-create' %}">
+        {% trans "Add new author" %}
+      </a>
+    </p>
+  {% endif %}
+
+  {% if author_list %}
+    <ul>
+      {% for author in author_list %}
+        <li>
+          <a href="{% url 'author-detail' author.pk %}">
+            {{ author.last_name }}, {{ author.first_name }}
+          </a>
+          {# Edit/Delete links as before #}
+          {% if perms.catalog.change_author %}
+            | <a href="{% url 'author-update' author.pk %}">{% trans "Edit" %}</a>
+          {% endif %}
+          {% if perms.catalog.delete_author %}
+            | <a href="{% url 'author-delete' author.pk %}">{% trans "Delete" %}</a>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+
+  {% else %}
+    <p>{% trans "No authors found." %}</p>
+  {% endif %}
+{% endblock %}
