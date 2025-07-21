@@ -1,15 +1,11 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from catalog.models import Book, Author, BookInstance
-from catalog.constants import LOAN_STATUS_AVAILABLE, LOAN_STATUS_ON_LOAN
+from catalog.constants import LOAN_STATUS_AVAILABLE, LOAN_STATUS_ON_LOAN, PAGINATION_BY
 from catalog.constants import LOAN_STATUS
-
-
-from django.shortcuts import render
-from .models import Book, BookInstance, Author
-from .constants import LOAN_STATUS_AVAILABLE
 
 
 def index(request):
@@ -39,7 +35,7 @@ class BookListView(generic.ListView):
     model = Book
     context_object_name = 'book_list'
     template_name = 'catalog/book_list.html'
-    paginate_by = 2
+    paginate_by = PAGINATION_BY 
 
 
 class BookDetailView(generic.DetailView):
@@ -53,3 +49,12 @@ class BookDetailView(generic.DetailView):
         context['genres'] = book.genre.all()
         context['instances'] = book.bookinstance_set.all()
         return context
+
+
+class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
+    model = BookInstance
+    template_name = 'catalog/bookinstance_list_borrowed_user.html'
+    paginate_by = PAGINATION_BY 
+
+    def get_queryset(self):
+        return BookInstance.objects.filter(borrower=self.request.user, status__exact=LOAN_STATUS_ON_LOAN).order_by('due_back')

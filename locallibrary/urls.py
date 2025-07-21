@@ -25,4 +25,5 @@ urlpatterns = [
     path('catalog/', include('catalog.urls')),  # <-- Gọi đến app catalog
     # <-- Chuyển / về /catalog/
     path('', RedirectView.as_view(url='catalog/')),
+    path('accounts/', include('django.contrib.auth.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
