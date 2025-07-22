@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %} {% load i18n %} {% block content %}
+<h1>{% trans "Delete Author" %}</h1>
+<p>
+  {% blocktrans with name=object.get_full_name %} Are you sure you want to
+  delete author {{ name }}? {% endblocktrans %}
+</p>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">{% trans "Yes, delete" %}</button>
+</form>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+{% load i18n %}
+
+{% block content %}
+  <h1>
+    {{ object.first_name }} {{ object.last_name }}
+  </h1>
+
+  <p><strong>{% trans "Date of birth" %}:</strong>
+     {{ object.date_of_birth }}</p>
+
+  {% if object.date_of_death %}
+    <p><strong>{% trans "Date of death" %}:</strong>
+       {{ object.date_of_death }}</p>
+  {% endif %}
+
+  {% if perms.catalog.change_author %}
+    <p>
+      <a href="{% url 'author-update' object.pk %}">{% trans "Edit" %}</a>
+      {% if perms.catalog.delete_author %}
+        | <a href="{% url 'author-delete' object.pk %}">{% trans "Delete" %}</a>
+      {% endif %}
+    </p>
+  {% endif %}
+{% endblock %}
