@@ -208,3 +208,17 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Django collected static files
+staticfiles/
+
+# Uploaded media (if you add one)
+media/
+
+# -------------------------------------------------------------------
+# Fly.io
+# ignore any local Fly metadata directories
+.fly/
+fly.toml
+.github/workflows/
+.dockerignore
