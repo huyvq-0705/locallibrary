@@ -21,7 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('secureadmin/', admin.site.urls),
     path('catalog/', include('catalog.urls')),  # <-- Gọi đến app catalog
     # <-- Chuyển / về /catalog/
     path('', RedirectView.as_view(url='catalog/')),
